@@ -138,7 +138,7 @@ if (isReplay) {
         replayRunner.setSpanProcessor(spanProcessor);
         await spanProcessor.forceFlush();
         sdk.start();
-        console.log(`@codeparrot/js-agent, 1.2.5, ${namespace}, ${appName}, in ${envName}`);
+        console.log(`@codeparrot/js-agent, 1.2.6, ${namespace}, ${appName}, in ${envName}`);
         await replayRunner.runHttpReplay(httpInstrumentation);
         await replayRunner.runGrpcReplay(grpcInstrumentation);
 
@@ -150,5 +150,5 @@ if (isReplay) {
     }, replayDelay);
 } else {
     sdk.start();
-    console.log(`@codeparrot/js-agent, 1.2.5, ${namespace}, ${appName}, in ${envName}`);
+    console.log(`@codeparrot/js-agent, 1.2.6, ${namespace}, ${appName}, in ${envName}`);
 }
