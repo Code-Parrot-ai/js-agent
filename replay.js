@@ -28,7 +28,7 @@ module.exports.onReplay = () => {
 }
 
 module.exports.ReplayRunner = class ReplayRunner {
-  static async create(jsonKeyFile, namespace, service, testWait) {
+  static async create(namespace, service, testWait) {
     let fileContents;
     try {
       await fs.readFile(HTTP_INDEX_FILE, 'utf8'); // check if file exists
@@ -38,7 +38,7 @@ module.exports.ReplayRunner = class ReplayRunner {
       const filePath = `${namespacePrefix}/default/${service}/`;
 
       // Lists files in the bucket
-      const storage = new Storage({ keyFilename: jsonKeyFile });
+      const storage = new Storage();
       const [files, obj, meta] = await storage.bucket('codeparrotai-common')
         .getFiles({ prefix: filePath, autoPaginate: false });
 
@@ -192,14 +192,14 @@ module.exports.ReplayRunner = class ReplayRunner {
   }
 }
 
-module.exports.triggerOnReplayComplete = async function (jsonKeyFile, namespace, service, metadata, version) {
+module.exports.triggerOnReplayComplete = async function (namespace, service, metadata, version) {
   diag.info(`Waiting 10s before triggering onReplayComplete`);
   await new Promise((resolve) => setTimeout(resolve, 10000));
 
-  const keys = require(jsonKeyFile);
+  // const keys = require(jsonKeyFile);
   const client = new JWT({
-    email: keys.client_email,
-    key: keys.private_key,
+    // email: keys.client_email,
+    // key: keys.private_key,
     scopes: ['https://www.googleapis.com/auth/cloud-platform'],
   });
   const url = `https://pubsub.googleapis.com/v1/projects/innate-actor-378220/topics/cp-replay-cron:publish`;
@@ -208,10 +208,16 @@ module.exports.triggerOnReplayComplete = async function (jsonKeyFile, namespace,
       attributes: { namespace, service, metadata, version },
     }]
   }
-  const res = await client.request({ url, method: 'POST', data });
-  if (res.status !== 200) {
-    logAndThrow(`Failed to trigger onReplayComplete: ${res.status} ${JSON.stringify(res.data)}`);
+  try {
+    const res = await client.request({ url, method: 'POST', data });
+    if(res?.status == 200) {
+      diag.info(`Triggered onReplayComplete: ${res?.status}`);
+      diag.info(`Report will be available at: https://dashboard.codeparrot.ai/diff/${namespace}/${service}/${version}`);
+    } else {
+      console.log(`Failed to trigger onReplayComplete: ${res?.status} ${JSON.stringify(res?.data)}`);
+    }
+  } catch(e) {
+    //this will error out without keyfile
+    console.log("Error while publishing on google pubsub", e);
   }
-  diag.info(`Triggered onReplayComplete: ${res.status}`);
-  diag.info(`Report will be available at: https://dashboard.codeparrot.ai/diff/${namespace}/${service}/${version}`);
 }

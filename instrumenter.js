@@ -130,7 +130,7 @@ if (isReplay) {
 
     setTimeout(async () => {
         diag.info(`Replay delay of ${replayDelay}ms is over. Starting replay...`);
-        const replayRunner = await ReplayRunner.create(jsonKeyFile, namespace, appName, testWait);
+        const replayRunner = await ReplayRunner.create(namespace, appName, testWait);
         httpInstrumentation.setReplayResponseFn(replayRunner.createHttpReplayResponseFn());
         grpcInstrumentation.setReplayResponseFn(replayRunner.createGrpcReplayResponseFn());
         pgInstrumentation.setReplayResponseFn(replayRunner.createPgReplayResponseFn());
@@ -141,7 +141,7 @@ if (isReplay) {
         await replayRunner.runGrpcReplay(grpcInstrumentation);
 
         sdk.shutdown();
-        await triggerOnReplayComplete(jsonKeyFile, namespace, appName, metadata, getVersion());
+        await triggerOnReplayComplete(namespace, appName, metadata, getVersion());
         diag.info(`Replay is over. Exiting...`);
         await replayRunner.cleanUp();
         process.exit(0);
