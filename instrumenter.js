@@ -136,8 +136,7 @@ if (isReplay) {
         pgInstrumentation.setReplayResponseFn(replayRunner.createPgReplayResponseFn());
         replayRunner.setSpanProcessor(spanProcessor);
         await spanProcessor.forceFlush();
-        sdk.start();
-        console.log(`@codeparrot/js-agent, 1.2.6, ${namespace}, ${appName}, in ${envName}`);
+        start();
         await replayRunner.runHttpReplay(httpInstrumentation);
         await replayRunner.runGrpcReplay(grpcInstrumentation);
 
@@ -148,6 +147,5 @@ if (isReplay) {
         process.exit(0);
     }, replayDelay);
 } else {
-    sdk.start();
-    console.log(`@codeparrot/js-agent, 1.2.6, ${namespace}, ${appName}, in ${envName}`);
+    start();
 }
