@@ -22,9 +22,17 @@ const samplingRatio = env.CODE_PARROT_SAMPLING_RATIO ?? 1.0;
 const envName = isReplay ? 'replay' : env.CODE_PARROT_ENV_NAME || 'default';
 const version = env.CODE_PARROT_VERSION;
 const jsonKeyFile = env.CODE_PARROT_JSON_KEY_FILE;
+
+if (!jsonKeyFile) {
+  console.info(`CODE_PARROT_JSON_KEY_FILE env variable not set. Sending data to common cloud!`);
+  console.info(`DO NOT USE THIS IN PRODUCTION! Nor with sensitive data!`);
+
+  jsonKeyFile = `${__dirname}/agent-internal.json`;
+}
 //
 const collectorGrpcUrl = env.COLLECTOR_GRPC_URL;
 
+// const namespace = require(jsonKeyFile)['client_email'];
 const namespace = 'nodejs-agent-for-internal@innate-actor-378220.iam.gserviceaccount.com';
 
 function getVersion() {
@@ -130,7 +138,7 @@ if (isReplay) {
 
     setTimeout(async () => {
         diag.info(`Replay delay of ${replayDelay}ms is over. Starting replay...`);
-        const replayRunner = await ReplayRunner.create(namespace, appName, testWait);
+        const replayRunner = await ReplayRunner.create(jsonKeyFile, namespace, appName, testWait);
         httpInstrumentation.setReplayResponseFn(replayRunner.createHttpReplayResponseFn());
         grpcInstrumentation.setReplayResponseFn(replayRunner.createGrpcReplayResponseFn());
         pgInstrumentation.setReplayResponseFn(replayRunner.createPgReplayResponseFn());
@@ -141,7 +149,7 @@ if (isReplay) {
         await replayRunner.runGrpcReplay(grpcInstrumentation);
 
         sdk.shutdown();
-        await triggerOnReplayComplete(namespace, appName, metadata, getVersion());
+        await triggerOnReplayComplete(jsonKeyFile, namespace, appName, metadata, getVersion());
         diag.info(`Replay is over. Exiting...`);
         await replayRunner.cleanUp();
         process.exit(0);
