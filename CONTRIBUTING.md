@@ -60,7 +60,7 @@ npm unlink @codeparrot/js-agent
 
 Create a local file `./agent-internal.json`. This file is provided by GCP after you have created a **service account** with appropriate permissions.
 
-This file is ignored in git.
+This file is ignored in git, but included in the npm package (i.e. during `npm publish`)
 
 ## Use a sample/real application to test
 
