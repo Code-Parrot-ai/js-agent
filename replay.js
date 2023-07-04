@@ -1,6 +1,5 @@
 const process = require('node:process');
 const fs = require('fs').promises;
-const { STATUS_CODES } = require('node:http');
 
 const { diag } = require('@opentelemetry/api');
 const { logAndThrow } = require('@codeparrot/instrumentation');
@@ -38,7 +37,7 @@ module.exports.ReplayRunner = class ReplayRunner {
       const filePath = `${namespacePrefix}/default/${service}/`;
 
       // Lists files in the bucket
-      const storage = new Storage({keyFilename: jsonKeyFile });
+      const storage = new Storage({ keyFilename: jsonKeyFile });
       const [files, obj, meta] = await storage.bucket('codeparrotai-common')
         .getFiles({ prefix: filePath, autoPaginate: false });
 
@@ -208,16 +207,10 @@ module.exports.triggerOnReplayComplete = async function (jsonKeyFile, namespace,
       attributes: { namespace, service, metadata, version },
     }]
   }
-  try {
-    const res = await client.request({ url, method: 'POST', data });
-    if(res?.status == 200) {
-      diag.info(`Triggered onReplayComplete: ${res?.status}`);
-      diag.info(`Report will be available at: https://dashboard.codeparrot.ai/diff/${namespace}/${service}/${version}`);
-    } else {
-      console.log(`Failed to trigger onReplayComplete: ${res?.status} ${JSON.stringify(res?.data)}`);
-    }
-  } catch(e) {
-    //this will error out without keyfile
-    console.log("Error while publishing on google pubsub", e);
+  const res = await client.request({ url, method: 'POST', data });
+  if (res.status !== 200) {
+    logAndThrow(`Failed to trigger onReplayComplete: ${res.status} ${JSON.stringify(res.data)}`);
   }
+  diag.info(`Triggered onReplayComplete: ${res.status}`);
+  diag.info(`Report will be available at: https://dashboard.codeparrot.ai/diff/${namespace}/${service}/${version}`);
 }
