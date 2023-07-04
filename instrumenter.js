@@ -21,7 +21,7 @@ const appName = env.CODE_PARROT_APP_NAME || 'nodeJS-app';
 const samplingRatio = env.CODE_PARROT_SAMPLING_RATIO ?? 1.0;
 const envName = isReplay ? 'replay' : env.CODE_PARROT_ENV_NAME || 'default';
 const version = env.CODE_PARROT_VERSION;
-const jsonKeyFile = env.CODE_PARROT_JSON_KEY_FILE;
+let jsonKeyFile = env.CODE_PARROT_JSON_KEY_FILE;
 
 if (!jsonKeyFile) {
   console.info(`CODE_PARROT_JSON_KEY_FILE env variable not set. Sending data to common cloud!`);
