@@ -29,11 +29,10 @@ if (!jsonKeyFile) {
 
   jsonKeyFile = `${__dirname}/agent-internal.json`;
 }
-//
-const collectorGrpcUrl = env.COLLECTOR_GRPC_URL;
 
-// const namespace = require(jsonKeyFile)['client_email'];
-const namespace = 'nodejs-agent-for-internal@innate-actor-378220.iam.gserviceaccount.com';
+const collectorGrpcUrl = env.CODE_PARROT_URL || 'http://130.211.117.203:4317'; // jaeger-common
+
+const namespace = require(jsonKeyFile)['client_email'];
 
 function getVersion() {
     if (version) {
@@ -128,7 +127,7 @@ const sdk = new opentelemetry.NodeSDK({
 
 function start() {
     sdk.start();
-    console.log(`@codeparrot/js-agent v0.0.2001, ${appName}, in ${envName}, ${version}`);
+    console.log(`@codeparrot/js-agent v2.0.0, ${appName}, in ${envName}, ${getVersion()}, to ${collectorGrpcUrl}`);
 }
 
 if (isReplay) {
