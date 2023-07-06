@@ -127,7 +127,7 @@ const sdk = new opentelemetry.NodeSDK({
 
 function start() {
     sdk.start();
-    console.log(`@codeparrot/js-agent v2.0.1, ${appName}, in ${envName}, ${getVersion()}, to ${collectorGrpcUrl}`);
+    console.log(`@codeparrot/js-agent v2.0.2, ${appName}, in ${envName}, ${getVersion()}, to ${collectorGrpcUrl}`);
 }
 
 if (isReplay) {
@@ -146,6 +146,7 @@ if (isReplay) {
         start();
         await replayRunner.runHttpReplay(httpInstrumentation);
         await replayRunner.runGrpcReplay(grpcInstrumentation);
+        await spanProcessor.forceFlush();
 
         sdk.shutdown();
         await triggerOnReplayComplete(jsonKeyFile, namespace, appName, metadata, getVersion());

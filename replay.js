@@ -83,7 +83,7 @@ module.exports.ReplayRunner = class ReplayRunner {
       } catch (error) {
         diag.error(`runHttpReplay: continuing after ${error?.stack}`);
       }
-      if (i % 10 === 0) await this.spanProcessor.forceFlush();
+      if (i % 20 === 0) await this.spanProcessor.forceFlush();
 
       await new Promise((resolve) => setTimeout(resolve, this.testWait));
     }
