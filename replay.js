@@ -1,6 +1,5 @@
 const process = require('node:process');
 const fs = require('fs').promises;
-const { STATUS_CODES } = require('node:http');
 
 const { diag } = require('@opentelemetry/api');
 const { logAndThrow } = require('@codeparrot/instrumentation');
@@ -84,7 +83,8 @@ module.exports.ReplayRunner = class ReplayRunner {
       } catch (error) {
         diag.error(`runHttpReplay: continuing after ${error?.stack}`);
       }
-      await this.spanProcessor.forceFlush();
+      if (i % 20 === 0) await this.spanProcessor.forceFlush();
+
       await new Promise((resolve) => setTimeout(resolve, this.testWait));
     }
   }
