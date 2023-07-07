@@ -1,13 +1,13 @@
 {
   "name": "@codeparrot/js-agent",
-  "version": "2.0.2",
+  "version": "2.0.4",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "@codeparrot/instrumentation": "^0.35.7",
     "@codeparrot/instrumentation-grpc": "^0.35.14",
-    "@codeparrot/instrumentation-http": "^0.35.12",
+    "@codeparrot/instrumentation-http": "^0.35.13",
     "@codeparrot/instrumentation-pg": "0.34.8",
     "@google-cloud/storage": "^6.9.4",
     "@opentelemetry/api": "^1.4.0",

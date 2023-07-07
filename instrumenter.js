@@ -68,7 +68,7 @@ if (isReplay) {
 
 const spanProcessor = new BatchSpanProcessor(new OTLPTraceExporter({
     url: collectorGrpcUrl,
-    timeoutMillis: 1000,
+    timeoutMillis: 3000,
 }));
 
 const grpcInstrumentation = new GrpcInstrumentation();
@@ -127,7 +127,7 @@ const sdk = new opentelemetry.NodeSDK({
 
 function start() {
     sdk.start();
-    console.log(`@codeparrot/js-agent v2.0.2, ${appName}, in ${envName}, ${getVersion()}, to ${collectorGrpcUrl}`);
+    console.log(`@codeparrot/js-agent v2.0.3, ${appName}, in ${envName}, ${getVersion()}, to ${collectorGrpcUrl}`);
 }
 
 if (isReplay) {
