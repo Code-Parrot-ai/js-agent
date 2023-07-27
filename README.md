@@ -34,6 +34,23 @@ Then for every PR, the above unique API calls are run against the new version of
 
 This basically `require`’s the code parrot agent package **before** your application code.
 
+If you are using pm2 to run your application, then the following syantx can help you get started
+```javascript
+module.exports = {
+  apps : [{
+    name   : "app1",
+    script : "./app.js",
+    node_args: "--require @codeparrot/js-agent",
+    env_production: {
+      NODE_ENV: "production",
+      CODE_PARROT_JSON_KEY_FILE: "/path-to-file/agent-file.json",
+      CODE_PARROT_APP_NAME: "test-app-1",
+      CODE_PARROT_VERSION: "0.0.1",
+   },
+  }]
+}
+```
+
 ### Set the following env variable:
 
 ```bash
