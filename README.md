@@ -34,12 +34,30 @@ Then for every PR, the above unique API calls are run against the new version of
 
 This basically `require`’s the code parrot agent package **before** your application code.
 
+If you are using pm2 to run your application, then the following syantx can help you get started
+```javascript
+module.exports = {
+  apps : [{
+    name   : "app1",
+    script : "./app.js",
+    node_args: "--require @codeparrot/js-agent",
+    env_production: {
+      NODE_ENV: "production",
+      CODE_PARROT_JSON_KEY_FILE: "/path-to-file/agent-file.json",
+      CODE_PARROT_APP_NAME: "test-app-1",
+      CODE_PARROT_VERSION: "0.0.1",
+   },
+  }]
+}
+```
+
 ### Set the following env variable:
 
 ```bash
 # set it to your *unique* service name
 CODE_PARROT_APP_NAME=<service-name>
 ```
+> **_NOTE:_** The environment variables have to be set before the agent is pre-loaded. For example, if you are using dotenv to load environment variable in your app, then these variables won't be available to the codeparrot js-agent.
 
 When you start your nodeJS application and see a log line like:
 
@@ -59,6 +77,8 @@ Then, create 2 new files:
 2. `codeparrot.sh`
 
 to run the tests. Every code push, this Dockerfile is built and run. This new Dockerfile is almost as same as your existing one, except that it sets the `CMD` to run `codeparrot.sh` instead of the usual `npm start`.
+
+> **_NOTE:_** You don't have to provision docker, you just provide the dockerfile, and our github app runs this in cloud so that it is able to generate diff report. The onus is on us.
 
 `codeparrot.sh` runs your app start command (like `npm start`) in a loop, until all the tests execute.
 
