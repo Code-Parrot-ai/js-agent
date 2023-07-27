@@ -43,7 +43,7 @@ module.exports = {
     node_args: "--require @codeparrot/js-agent",
     env_production: {
       NODE_ENV: "production",
-      CODE_PARROT_JSON_KEY_FILE: "/path-to-file/agent-file.json",
+      CODE_PARROT_JSON_KEY_FILE: "/path-to-file/agent-file.json",//replace with the path of your agent file
       CODE_PARROT_APP_NAME: "test-app-1",
       CODE_PARROT_VERSION: "0.0.1",
    },
